@@ -1,0 +1,15 @@
+meta {
+  name: removeWishlist
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{path}}/wishlistlists/10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTc1MDYwODUzNiwiZXhwIjoxNzUxMjEzMzM2fQ.KdjtIlZR6XvQHjDrP_o5Rzj8rZmP-02YMTmQRx03UF8
+}

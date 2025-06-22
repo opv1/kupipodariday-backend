@@ -1,0 +1,24 @@
+meta {
+  name: createWishlist
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{path}}/wishlistlists
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTc1MDYwODUzNiwiZXhwIjoxNzUxMjEzMzM2fQ.KdjtIlZR6XvQHjDrP_o5Rzj8rZmP-02YMTmQRx03UF8
+}
+
+body:json {
+  {
+    "name": "Test",
+    "description": "description",
+    "image": "http://test.ru",
+    "items": [1]
+  }
+}

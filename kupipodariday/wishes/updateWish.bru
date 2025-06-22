@@ -1,0 +1,21 @@
+meta {
+  name: updateWish
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{path}}/wishes/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc1MDYwODQ1MSwiZXhwIjoxNzUxMjEzMjUxfQ.jk4s4MhXXa-jeJrco6apVrjBpVcxKTjGxUrpHzwmGPQ
+}
+
+body:json {
+  {
+    "price": 5
+  }
+}

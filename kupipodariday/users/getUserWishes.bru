@@ -1,0 +1,15 @@
+meta {
+  name: getUserWishes
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{path}}/users/me/wishes
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc1MDYwODE2MCwiZXhwIjoxNzUxMjEyOTYwfQ.kWf7ShWPMnJAP935R3Npsr3b3Oapf6rYAmFP9ctUxXA
+}

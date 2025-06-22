@@ -1,0 +1,22 @@
+meta {
+  name: updateWishlist
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{path}}/wishlistlists/9
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTc1MDYwODUzNiwiZXhwIjoxNzUxMjEzMzM2fQ.KdjtIlZR6XvQHjDrP_o5Rzj8rZmP-02YMTmQRx03UF8
+}
+
+body:json {
+  {
+    "description": "test!!!edwsfaq",
+    "name": "dadsafd"
+  }
+}

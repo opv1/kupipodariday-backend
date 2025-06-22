@@ -1,0 +1,15 @@
+meta {
+  name: getAllWishlists
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{path}}/wishlistlists
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTc1MDYwODUzNiwiZXhwIjoxNzUxMjEzMzM2fQ.KdjtIlZR6XvQHjDrP_o5Rzj8rZmP-02YMTmQRx03UF8
+}

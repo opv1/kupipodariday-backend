@@ -1,0 +1,25 @@
+meta {
+  name: createWish
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{path}}/wishes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc1MDU5OTI4OCwiZXhwIjoxNzUxMjA0MDg4fQ.lz-6_g5Nsg2c2mjzaXAlwVxn-hGTDnrRbbHRfVAqQLg
+}
+
+body:json {
+  {
+    "name": "Подарок1",
+    "link": "http://test.com",
+    "image": "http://test.com",
+    "price": 10,
+    "description": "test"
+  }
+}

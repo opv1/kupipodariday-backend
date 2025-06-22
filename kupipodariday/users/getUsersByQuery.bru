@@ -1,0 +1,21 @@
+meta {
+  name: getUsersByQuery
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{path}}/users/find
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlhdCI6MTc1MDU5ODQzMSwiZXhwIjoxNzUxMjAzMjMxfQ.oMU54pFBWzGnC5Wkt14ZDMrUqMFjFCEuaNw57b-hTHc
+}
+
+body:json {
+  {
+    "query": "opv1"
+  }
+}

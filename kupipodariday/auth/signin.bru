@@ -1,0 +1,18 @@
+meta {
+  name: signin
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{path}}/signin
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "opv11",
+    "password": "password"
+  }
+}

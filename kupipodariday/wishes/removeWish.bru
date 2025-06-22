@@ -1,0 +1,15 @@
+meta {
+  name: removeWish
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{path}}/wishes/2
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc1MDYwODQ1MSwiZXhwIjoxNzUxMjEzMjUxfQ.jk4s4MhXXa-jeJrco6apVrjBpVcxKTjGxUrpHzwmGPQ
+}
