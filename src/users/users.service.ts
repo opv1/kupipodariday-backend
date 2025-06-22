@@ -43,10 +43,6 @@ export class UsersService {
 
     const newUser = await this.userRepository.findOneBy({ id: createdUser.id });
 
-    if (!newUser) {
-      throw new NotFoundException('Неудалось добавить пользователя');
-    }
-
     return newUser;
   }
 
@@ -86,6 +82,15 @@ export class UsersService {
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
     const { username, email, password } = updateUserDto;
 
+    const userToBeUpdated = await this.userRepository.findOne({
+      where: { id: userId },
+      select: { username: true, email: true, password: true },
+    });
+
+    if (!userToBeUpdated) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
     if (email) {
       const userUsesEmail = await this.userRepository.findOne({
         where: { email },
@@ -115,28 +120,9 @@ export class UsersService {
       updateUserDto.password = hashedPassword;
     }
 
-    const userToBeUpdated = await this.userRepository.findOne({
-      where: { id: userId },
-      select: { username: true, email: true, password: true },
-    });
-
-    if (!userToBeUpdated) {
-      throw new NotFoundException('Пользователь не найден');
-    }
-
-    await this.userRepository.update(
-      { id: userId },
-      {
-        ...userToBeUpdated,
-        ...updateUserDto,
-      },
-    );
+    await this.userRepository.update(userId, updateUserDto);
 
     const updatedUser = await this.userRepository.findOneBy({ id: userId });
-
-    if (!updatedUser) {
-      throw new NotFoundException('Неудалось обновить пользователя');
-    }
 
     return updatedUser;
   }

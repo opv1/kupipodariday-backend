@@ -70,10 +70,6 @@ export class OffersService {
       id: createdOffer.id,
     });
 
-    if (!newOffer) {
-      throw new NotFoundException('Неудалось добавить желающего');
-    }
-
     return newOffer;
   }
 

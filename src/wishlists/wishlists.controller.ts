@@ -14,6 +14,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { WishlistsService } from './wishlists.service';
 import { User } from 'src/users/entities/user.entity';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @UseGuards(JwtGuard)
 @Controller('wishlists')
@@ -45,7 +46,8 @@ export class WishlistsController {
   async updateWishlist(
     @Req() req: Request & { user: User },
     @Param('id') id: number,
-    @Body() updateWishlistDto: UpdateWishlistDto,
+    @Body()
+    updateWishlistDto: Omit<UpdateWishlistDto, 'items'> & { items?: Wish[] },
   ) {
     return await this.wishlistsService.updateWishlist(
       id,

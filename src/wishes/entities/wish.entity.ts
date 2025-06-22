@@ -83,5 +83,5 @@ export class Wish {
   offers: Offer[];
 
   @ManyToMany(() => Wishlist, (wishlists) => wishlists.items)
-  wishlist: Wishlist[];
+  wishlists: Wishlist[];
 }

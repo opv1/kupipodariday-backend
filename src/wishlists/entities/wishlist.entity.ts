@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -36,7 +37,8 @@ export class Wishlist {
   @IsUrl()
   image: string;
 
-  @ManyToMany(() => Wish, (wishes) => wishes.wishlist)
+  @ManyToMany(() => Wish, (wishes) => wishes.wishlists)
+  @JoinTable()
   items: Wish[];
 
   @ManyToOne(() => User, (users) => users.wishlists)

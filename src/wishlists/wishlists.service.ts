@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +14,8 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 
 @Injectable()
 export class WishlistsService {
+  private readonly logger = new Logger(WishlistsService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -23,10 +26,10 @@ export class WishlistsService {
   ) {}
 
   async createWishlist(userId: number, createWishlistDto: CreateWishlistDto) {
-    const { name, image, itemsId } = createWishlistDto;
+    const { items } = createWishlistDto;
 
     const wishes = await this.wishRepository.find({
-      where: { id: In(itemsId) },
+      where: { id: In(items) },
     });
 
     const user = await this.userRepository.findOneBy({ id: userId });
@@ -36,8 +39,7 @@ export class WishlistsService {
     }
 
     const wishlist = this.wishlistRepository.create({
-      name,
-      image,
+      ...createWishlistDto,
       owner: user,
       items: wishes,
     });
@@ -47,10 +49,6 @@ export class WishlistsService {
     const newWishlist = await this.wishlistRepository.findOneBy({
       id: createdWishlist.id,
     });
-
-    if (!newWishlist) {
-      throw new NotFoundException('Неудалось добавить список желаний');
-    }
 
     return newWishlist;
   }
@@ -77,42 +75,36 @@ export class WishlistsService {
   async updateWishlist(
     wishlistId: number,
     userId: number,
-    updateWishlistDto: UpdateWishlistDto,
+    updateWishlistDto: Omit<UpdateWishlistDto, 'items'> & { items?: Wish[] },
   ) {
-    const wishlist = await this.wishlistRepository.findOneBy({
-      id: wishlistId,
+    const wishlistToBeUpdated = await this.wishlistRepository.findOne({
+      where: { id: wishlistId },
+      relations: { owner: true },
     });
 
-    if (!wishlist) {
+    if (!wishlistToBeUpdated) {
       throw new NotFoundException('Список желаний не найден');
     }
 
-    if (wishlist.owner.id !== userId) {
+    if (wishlistToBeUpdated.owner.id !== userId) {
       throw new BadRequestException(
         'Список желаний может редактировать только владелец',
       );
     }
 
-    const { name, image, itemsId } = updateWishlistDto;
+    if (updateWishlistDto.items) {
+      const wishes = await this.wishRepository.find({
+        where: { id: In(updateWishlistDto.items) },
+      });
 
-    const wishes = await this.wishRepository.find({
-      where: { id: In(itemsId!) },
-    });
+      updateWishlistDto.items = wishes;
+    }
 
-    await this.wishlistRepository.save({
-      ...wishlist,
-      name,
-      image,
-      items: wishes,
-    });
+    await this.wishlistRepository.update(wishlistId, updateWishlistDto);
 
     const updatedWishlist = await this.wishlistRepository.findOneBy({
       id: wishlistId,
     });
-
-    if (!updatedWishlist) {
-      throw new NotFoundException('Неудалось обновить список желаний');
-    }
 
     return updatedWishlist;
   }

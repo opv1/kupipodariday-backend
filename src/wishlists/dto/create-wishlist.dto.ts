@@ -7,10 +7,15 @@ export class CreateWishlistDto {
   name: string;
 
   @IsNotEmpty()
+  @IsString()
+  @Length(0, 1500)
+  description: string;
+
+  @IsNotEmpty()
   @IsUrl()
   image: string;
 
   @IsNotEmpty()
   @IsArray()
-  itemsId: number[];
+  items: number[];
 }

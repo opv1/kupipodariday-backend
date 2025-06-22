@@ -5,7 +5,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -37,10 +36,8 @@ export class Offer {
   hidden: boolean;
 
   @ManyToOne(() => User, (user) => user.offers)
-  @JoinColumn({ name: 'userId' })
   user: User;
 
   @ManyToOne(() => Wish, (wish) => wish.offers)
-  @JoinColumn({ name: 'itemId' })
   item: Wish;
 }

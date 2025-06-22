@@ -36,10 +36,6 @@ export class WishesService {
 
     const newWish = await this.wishRepository.findOneBy({ id: createdWish.id });
 
-    if (!newWish) {
-      throw new NotFoundException('Неудалось добавить подарок');
-    }
-
     return newWish;
   }
 
@@ -103,10 +99,6 @@ export class WishesService {
     await this.wishRepository.update(wishId, updateWishDto);
 
     const updatedWish = await this.wishRepository.findOneBy({ id: wishId });
-
-    if (!updatedWish) {
-      throw new NotFoundException('Неудалось обновить подарок');
-    }
 
     return updatedWish;
   }
