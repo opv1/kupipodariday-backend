@@ -26,10 +26,10 @@ export class WishlistsService {
   ) {}
 
   async createWishlist(userId: number, createWishlistDto: CreateWishlistDto) {
-    const { items } = createWishlistDto;
+    const { itemsId } = createWishlistDto;
 
     const wishes = await this.wishRepository.find({
-      where: { id: In(items) },
+      where: { id: In(itemsId) },
     });
 
     const user = await this.userRepository.findOneBy({ id: userId });
