@@ -79,6 +79,27 @@ export class UsersService {
     return user;
   }
 
+  async findUserWishes(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { wishes: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    return user.wishes;
+  }
+
+  async findUsersByQuery(query: string) {
+    const users = await this.userRepository.find({
+      where: [{ username: query }, { email: query }],
+    });
+
+    return users;
+  }
+
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
     const { username, email, password } = updateUserDto;
 
@@ -125,26 +146,5 @@ export class UsersService {
     const updatedUser = await this.userRepository.findOneBy({ id: userId });
 
     return updatedUser;
-  }
-
-  async findUserWishes(userId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: { wishes: true },
-    });
-
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден');
-    }
-
-    return user.wishes;
-  }
-
-  async findUsersByQuery(query: string) {
-    const users = await this.userRepository.find({
-      where: [{ username: query }, { email: query }],
-    });
-
-    return users;
   }
 }

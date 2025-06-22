@@ -24,14 +24,6 @@ export class UsersController {
     return await this.usersService.findUserById(req.user.id);
   }
 
-  @Patch('me')
-  async updateUser(
-    @Req() req: Request & { user: User },
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return await this.usersService.updateUser(req.user.id, updateUserDto);
-  }
-
   @Get('me/wishes')
   async getUserWishes(@Req() req: Request & { user: User }) {
     return await this.usersService.findUserWishes(req.user.id);
@@ -46,6 +38,14 @@ export class UsersController {
   async getWishesUser(@Param('username') username: string) {
     const { id } = await this.usersService.findUserByUsername(username);
     return await this.usersService.findUserWishes(id);
+  }
+
+  @Patch('me')
+  async updateUser(
+    @Req() req: Request & { user: User },
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.updateUser(req.user.id, updateUserDto);
   }
 
   @Post('find')

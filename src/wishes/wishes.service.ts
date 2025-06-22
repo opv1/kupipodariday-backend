@@ -1,7 +1,7 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +13,8 @@ import { UpdateWishDto } from './dto/update-wish.dto';
 
 @Injectable()
 export class WishesService {
+  private readonly logger = new Logger(WishesService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -39,21 +41,21 @@ export class WishesService {
     return newWish;
   }
 
-  async findLastWishes() {
-    const wishes = await this.wishRepository.find({
-      order: { createdAt: 'DESC' },
-      skip: 0,
-      take: 40,
-    });
-
-    return wishes;
-  }
-
   async findTopWishes() {
     const wishes = await this.wishRepository.find({
       order: { copied: 'DESC' },
       skip: 0,
       take: 20,
+    });
+
+    return wishes;
+  }
+
+  async findLastWishes() {
+    const wishes = await this.wishRepository.find({
+      order: { createdAt: 'DESC' },
+      skip: 0,
+      take: 40,
     });
 
     return wishes;
@@ -103,6 +105,47 @@ export class WishesService {
     return updatedWish;
   }
 
+  async copyWish(userId: number, wishId: number) {
+    const wishToBeCopied = await this.wishRepository.findOne({
+      where: { id: wishId },
+      relations: { owner: true },
+    });
+    this.logger.error(wishToBeCopied);
+    if (!wishToBeCopied) {
+      throw new NotFoundException('Подарок не найден');
+    }
+
+    if (wishToBeCopied.owner.id === userId) {
+      throw new BadRequestException('Нельзя скопировать свой подарок к себе');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { wishes: true },
+    });
+
+    this.logger.error(user);
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    wishToBeCopied.copied++;
+
+    await this.wishRepository.save(wishToBeCopied);
+
+    const copiedWish = this.wishRepository.create(wishToBeCopied);
+
+    await this.wishRepository.insert({
+      ...copiedWish,
+      copied: 0,
+      raised: 0,
+      owner: user,
+    });
+
+    return copiedWish;
+  }
+
   async removeWish(userId: number, wishId: number) {
     const wishToBeRemoved = await this.wishRepository.findOne({
       where: { id: wishId },
@@ -120,47 +163,5 @@ export class WishesService {
     await this.wishRepository.remove(wishToBeRemoved);
 
     return wishToBeRemoved;
-  }
-
-  async copyWish(userId: number, wishId: number) {
-    const wishToBeCopied = await this.wishRepository.findOne({
-      where: { id: wishId },
-      relations: { owner: true },
-    });
-
-    if (!wishToBeCopied) {
-      throw new NotFoundException('Подарок не найден');
-    }
-
-    if (wishToBeCopied.owner.id === userId) {
-      throw new BadRequestException('Нельзя скопировать свой подарок к себе');
-    }
-
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: { wishes: true },
-    });
-
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден');
-    }
-
-    const isUserHasWish = user.wishes.some(
-      (wishItem) => wishItem.id === wishToBeCopied.id,
-    );
-
-    if (isUserHasWish) {
-      throw new ConflictException('У вас уже есть этот подарок');
-    }
-
-    const copyOfWish = this.wishRepository.create(wishToBeCopied);
-    copyOfWish.copied = 0;
-    copyOfWish.raised = 0;
-    copyOfWish.owner = user;
-    wishToBeCopied.copied++;
-    await this.wishRepository.save(wishToBeCopied);
-    await this.wishRepository.insert(copyOfWish);
-
-    return {};
   }
 }

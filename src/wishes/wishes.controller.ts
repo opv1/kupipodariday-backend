@@ -28,14 +28,14 @@ export class WishesController {
     return await this.wishesService.createWish(req.user.id, createWishDto);
   }
 
-  @Get('last')
-  async getLastWish() {
-    return await this.wishesService.findLastWishes();
-  }
-
   @Get('top')
   async getTopWish() {
     return await this.wishesService.findTopWishes();
+  }
+
+  @Get('last')
+  async getLastWish() {
+    return await this.wishesService.findLastWishes();
   }
 
   @UseGuards(JwtGuard)
@@ -59,20 +59,20 @@ export class WishesController {
   }
 
   @UseGuards(JwtGuard)
-  @Delete(':id')
-  async removeWish(
-    @Req() req: Request & { user: User },
-    @Param('id') wishId: number,
-  ) {
-    return await this.wishesService.removeWish(req.user.id, wishId);
-  }
-
-  @UseGuards(JwtGuard)
   @Post(':id/copy')
   async copyWish(
     @Req() req: Request & { user: User },
     @Param('id') wishId: number,
   ) {
     return await this.wishesService.copyWish(req.user.id, wishId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id')
+  async removeWish(
+    @Req() req: Request & { user: User },
+    @Param('id') wishId: number,
+  ) {
+    return await this.wishesService.removeWish(req.user.id, wishId);
   }
 }
