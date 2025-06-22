@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,8 +12,6 @@ import { UpdateWishDto } from './dto/update-wish.dto';
 
 @Injectable()
 export class WishesService {
-  private readonly logger = new Logger(WishesService.name);
-
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -110,7 +107,7 @@ export class WishesService {
       where: { id: wishId },
       relations: { owner: true },
     });
-    this.logger.error(wishToBeCopied);
+
     if (!wishToBeCopied) {
       throw new NotFoundException('Подарок не найден');
     }
@@ -123,8 +120,6 @@ export class WishesService {
       where: { id: userId },
       relations: { wishes: true },
     });
-
-    this.logger.error(user);
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
