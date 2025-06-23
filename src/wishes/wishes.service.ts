@@ -112,10 +112,6 @@ export class WishesService {
       throw new NotFoundException('Подарок не найден');
     }
 
-    if (wishToBeCopied.owner.id === userId) {
-      throw new BadRequestException('Нельзя скопировать свой подарок к себе');
-    }
-
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: { wishes: true },

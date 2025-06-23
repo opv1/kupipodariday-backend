@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashService } from 'src/hash/hash.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -94,15 +94,13 @@ export class UsersService {
 
   async findUsersByQuery(query: string) {
     const users = await this.userRepository.find({
-      where: [{ username: query }, { email: query }],
+      where: [{ username: Like(`%${query}%`) }, { email: Like(`%${query}%`) }],
     });
 
     return users;
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
-    const { username, email, password } = updateUserDto;
-
     const userToBeUpdated = await this.userRepository.findOne({
       where: { id: userId },
       select: { username: true, email: true, password: true },
@@ -112,32 +110,10 @@ export class UsersService {
       throw new NotFoundException('Пользователь не найден');
     }
 
-    if (email) {
-      const userUsesEmail = await this.userRepository.findOne({
-        where: { email },
-      });
-
-      if (userUsesEmail && userUsesEmail.id !== userId) {
-        throw new ConflictException(
-          'Пользователь с таким email уже существует',
-        );
-      }
-    }
-
-    if (username) {
-      const userUsesUserName = await this.userRepository.findOne({
-        where: { username },
-      });
-
-      if (userUsesUserName && userUsesUserName.id !== userId) {
-        throw new ConflictException(
-          'Пользователь с таким username уже существует',
-        );
-      }
-    }
-
-    if (password) {
+    if (updateUserDto.password) {
+      const { password } = updateUserDto;
       const hashedPassword = this.hashService.hashPassword(password);
+
       updateUserDto.password = hashedPassword;
     }
 
