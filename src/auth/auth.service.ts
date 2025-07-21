@@ -12,10 +12,7 @@ export class AuthService {
   ) {}
 
   auth(userId: number) {
-    const access_token = this.jwtService.sign(
-      { sub: userId },
-      { expiresIn: '7d' },
-    );
+    const access_token = this.jwtService.sign({ sub: userId });
 
     return { access_token };
   }

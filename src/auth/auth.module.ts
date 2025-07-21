@@ -7,20 +7,14 @@ import { LocalStrategy } from './strategies/local.stategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { HashModule } from 'src/hash/hash.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtConfigFactory } from 'src/config/jwt';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     HashModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
-      }),
-      inject: [ConfigService],
-    }),
+    JwtModule.registerAsync({ useClass: JwtConfigFactory }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
